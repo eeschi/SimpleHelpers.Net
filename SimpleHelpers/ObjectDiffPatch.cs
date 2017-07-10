@@ -32,8 +32,10 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SimpleHelpers
 {    
@@ -333,6 +335,7 @@ namespace SimpleHelpers
             settings.Formatting = Formatting.None;
             settings.MissingMemberHandling = MissingMemberHandling.Ignore;
             settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
+			settings.ContractResolver = new WritablePropertiesOnlyResolver();
 
             return settings;
         } 
@@ -429,7 +432,15 @@ namespace SimpleHelpers
         {
             AddToken (item, fieldName, diff.OldValues, diff.NewValues);
         }
-    }
+	    class WritablePropertiesOnlyResolver : DefaultContractResolver
+	    {
+		    protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
+		    {
+			    IList<JsonProperty> props = base.CreateProperties(type, memberSerialization);
+			    return props.Where(p => p.Writable).ToList();
+		    }
+	    }
+	}
 
     /// <summary>
     /// Result of a diff operation between two objects
