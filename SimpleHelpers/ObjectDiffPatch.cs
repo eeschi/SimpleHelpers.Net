@@ -270,7 +270,7 @@ namespace SimpleHelpers
                 var aS = (source as Newtonsoft.Json.Linq.JArray);
                 var aT = (target as Newtonsoft.Json.Linq.JArray);
 
-                if ((aS.Count == 0 || aT.Count == 0) && (aS.Count != aT.Count))
+                if (((aS?.Count??0) == 0 || (aT?.Count??0) == 0) && ((aS?.Count??0) != (aT?.Count??0)))
                 {
                     AddToken (result, fieldName, source, target);
                 }
